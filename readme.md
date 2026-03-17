@@ -1,52 +1,72 @@
 ### Laravel Console
 
-Laravel console is a handy tool that gives you possibility to debug your laravel application code in a *javascript-y* manner. you'll get Laravel Console in your devtools panel, you'll have access to all the logs that were logged by the Laravel Console, and you'll see these information without killing the code execution! 
+Laravel Console is a handy tool that lets you debug your Laravel application in a *JavaScript-style* manner. Logs appear directly in your browser's DevTools panel — without interrupting code execution.
 
-**table of contents**
+**Table of Contents**
 * [Prerequisites](#prerequisites)
 * [Getting Started](#getting-started)
 * [Usage](#usage)
 
 ----------
 #### Prerequisites
-In order for you to start using Laravel Console, you must have [Laravel 8.x]() installed.
+Requires **[Laravel 12.x](https://laravel.com/docs/12.x)** and **PHP 8.2+**.
 
 #### Getting Started
-In order for you to use Laravel Console you need to do two things. first you should install Laravel Console package:
+Install the package via Composer:
 ```sh
 composer require redberry/laravel-console --dev
 ```
 
-package is autodiscovered so there is no need for you to inject the service provider.
+The package is auto-discovered by Laravel's package discovery, so no manual registration is needed.
 
-after you've completed this step, then you need to install [Laravel Console](https://chrome.google.com/webstore/detail/laravel-console/eikhhbiadcdalcbppkfppnlmhhmcmanp) extension in your chrome browser and you're good to go :blush: 
+> **Laravel 11+ note:** If you have disabled package auto-discovery, add the service provider to your `bootstrap/providers.php` file:
+> ```php
+> return [
+>     // ...
+>     Redberry\LaravelConsole\ServiceProvider::class,
+> ];
+> ```
+
+Then install the [Laravel Console](https://chrome.google.com/webstore/detail/laravel-console/eikhhbiadcdalcbppkfppnlmhhmcmanp) Chrome extension and you're good to go. :blush:
 
 #### Usage
 
-For you to be able to log information in the Laravel Console devtools page, you are given facade:
+Use the `Console` facade to log from anywhere in your application:
 ```php
 use Redberry\LaravelConsole\Facades\Console;
 
-Console::emergency  ('hi there!');
-Console::alert      ('hi there!');
-Console::critical   ('hi there!');
-Console::error      ('hi there!');
-Console::warning    ('hi there!');
-Console::notice     ('hi there!');
-Console::info       ('hi there!');
-Console::log        ('hi there!');
+Console::emergency('hi there!');
+Console::alert     ('hi there!');
+Console::critical  ('hi there!');
+Console::error     ('hi there!');
+Console::warning   ('hi there!');
+Console::notice    ('hi there!');
+Console::info      ('hi there!');
+Console::log       ('hi there!');
 ```
 
-Respectively you can use helper function and more convinient way of logging:
+Or use the `console()` helper function:
 ```php
-console()->emergency  ('hi there!');
-console()->alert      ('hi there!');
-console()->critical   ('hi there!');
-console()->error      ('hi there!');
-console()->warning    ('hi there!');
-console()->notice     ('hi there!');
-console()->info       ('hi there!');
-console()->log        ('hi there!');
+console()->emergency('hi there!');
+console()->alert    ('hi there!');
+console()->critical ('hi there!');
+console()->error    ('hi there!');
+console()->warning  ('hi there!');
+console()->notice   ('hi there!');
+console()->info     ('hi there!');
+console()->log      ('hi there!');
+```
+
+#### Blade Directives
+
+You can also log directly from Blade templates:
+
+```blade
+{{-- Log a single value --}}
+@log($user)
+
+{{-- Log all variables available in the current view --}}
+@explain
 ```
 
 Happy logging :yum:
