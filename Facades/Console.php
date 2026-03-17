@@ -2,33 +2,30 @@
 
 namespace Redberry\LaravelConsole\Facades;
 
-use Redberry\LaravelConsole\App\Logger;
+use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static void alert($message)
- * @method static void critical($message)
- * @method static void debug($message)
- * @method static void emergency($message)
- * @method static void error($message)
- * @method static void info($message)
- * @method static void log($message)
- * @method static void notice($message)
- * @method static void warning($message)
+ * @method static void alert(mixed $message)
+ * @method static void critical(mixed $message)
+ * @method static void debug(mixed $message)
+ * @method static void emergency(mixed $message)
+ * @method static void error(mixed $message)
+ * @method static void info(mixed $message)
+ * @method static void log(mixed $message)
+ * @method static void notice(mixed $message)
+ * @method static void warning(mixed $message)
  *
  * @see \Redberry\LaravelConsole\App\Logger
  */
-class Console
+class Console extends Facade
 {
     /**
-     * @return Logger
+     * Get the registered name of the component.
+     *
+     * @return string
      */
-    public static function __callStatic($name, $arguments)
-    {   
-        return self::logger()->$name(...$arguments);
-    }
-
-    private static function logger()
+    protected static function getFacadeAccessor(): string
     {
-        return resolve('laravel-console.logger');
+        return 'laravel-console.logger';
     }
 }

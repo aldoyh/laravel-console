@@ -2,8 +2,6 @@
 
 namespace Redberry\LaravelConsole\App;
 
-use Symfony\Component\Routing\Exception\InvalidParameterException;
-
 class Log
 {
 	/**
@@ -42,7 +40,7 @@ class Log
 	/**
 	 * Format laravel console log.
 	 */
-	function __construct(int $id, string $level, mixed $message, Trace $trace)
+	public function __construct(int $id, string $level, mixed $message, Trace $trace)
 	{
 		$this->id = $id;
 		$this->level = $level;
@@ -54,37 +52,33 @@ class Log
 	/**
 	 * Get message type.
 	 */
-	protected function getMessageType($message)
+	protected function getMessageType(mixed $message): string
 	{
 		$nativeType = gettype($message);
 
-		if(in_array($nativeType, ['boolean','integer','double']))
-		{
+		if (in_array($nativeType, ['boolean', 'integer', 'double'])) {
 			return self::NUMBER;
 		}
 
-		if($nativeType === 'string')
-		{
+		if ($nativeType === 'string') {
 			return self::STRING;
 		}
 
-		if(in_array($nativeType, ['object', 'array']))
-		{
+		if (in_array($nativeType, ['object', 'array'])) {
 			return self::OBJECT;
 		}
 
-		if($nativeType === 'null')
-		{
+		if ($nativeType === 'NULL') {
 			return self::NULL;
-		} 
+		}
 
-		throw new InvalidParameterException("$nativeType can't be handeled by the laravel console!");
+		throw new \InvalidArgumentException("Type '{$nativeType}' cannot be handled by Laravel Console.");
 	}
 
 	/**
 	 * Convert log into json.
 	 */
-	public function json()
+	public function json(): string
 	{
 		return json_encode($this->toArray());
 	}

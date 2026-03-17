@@ -2,11 +2,8 @@
 
 namespace Redberry\LaravelConsole;
 
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Blade;
 use Redberry\LaravelConsole\App\Logger;
-use Illuminate\Log\Events\MessageLogged;
-use Redberry\LaravelConsole\App\ConsoleLogListener;
 use Illuminate\Support\ServiceProvider as SupportServiceProvider;
 
 class ServiceProvider extends SupportServiceProvider
@@ -16,9 +13,8 @@ class ServiceProvider extends SupportServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
         $this->app->singleton('laravel-console.logger', fn () => new Logger());
     }
 
@@ -27,46 +23,26 @@ class ServiceProvider extends SupportServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        # Registering listener for laravel internal logger.
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
-        // Event::listen(
-        //     MessageLogged::class,
-        //     ConsoleLogListener::class,
-        // );
-        
         /**
-         * Log data.
+         * Log a single value passed as the directive expression.
          */
-        Blade::directive('log', function ($item) {
-            eval("\$passedItem = $item;");
-            console()->log($passedItem);
-        }); 
-        
+        Blade::directive('log', function (string $expression): string {
+            return "<?php console()->log({$expression}); ?>";
+        });
+
         /**
-         * Log all the data passed into the view.
-         */ 
-        Blade::directive('explain', function () {
-            return '<?php 
-                $viewData = get_defined_vars()["__data"];
-                if(isset($viewData["__env"])) 
-                {
-                    unset($viewData["__env"]);
-                }
-
-                if(isset($viewData["app"])) 
-                {
-                    unset($viewData["app"]);
-                }
-
-                if(isset($viewData["errors"])) 
-                {
-                    unset($viewData["errors"]);
-                }
-
-                console()->log($viewData);
+         * Log all variables available in the current view scope.
+         */
+        Blade::directive('explain', function (): string {
+            return '<?php
+                $__consoleViewData = array_diff_key($__data ?? [], array_flip(["__env", "app", "errors"]));
+                console()->log($__consoleViewData);
+                unset($__consoleViewData);
             ?>';
-        }); 
+        });
     }
 }
